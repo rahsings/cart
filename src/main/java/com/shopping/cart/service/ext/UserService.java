@@ -10,4 +10,6 @@ public interface UserService {
     User get(Long id);
 
     List<UserDTO> getAll();
+
+    UserDTO getUserDTO(User user);
 }

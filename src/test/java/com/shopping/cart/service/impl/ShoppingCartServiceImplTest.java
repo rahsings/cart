@@ -3,14 +3,14 @@ package com.shopping.cart.service.impl;
 import com.shopping.cart.exception.CartNotFoundException;
 import com.shopping.cart.mapper.CartMapper;
 import com.shopping.cart.mapper.ShoppingCartMapper;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.entity.CartItem;
 import com.shopping.cart.model.entity.Product;
 import com.shopping.cart.model.entity.ShoppingCart;
 import com.shopping.cart.model.request.CartRequestDelete;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
-import com.shopping.cart.model.response.CartResponse;
+import com.shopping.cart.model.response.CartResponseTotal;
 import com.shopping.cart.service.CartService;
 import com.shopping.cart.service.ShoppingCartRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,9 +75,9 @@ class ShoppingCartServiceImplTest {
         shoppingCart.getCartItems().add(mockCartItem);
 
         doNothing().when(cartService).add(any(), any());
-        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new ShoppingCartDTO());
+        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new CartResponse());
 
-        ShoppingCartDTO result = shoppingCartService.addItemToCart(cartRequestInsert);
+        CartResponse result = shoppingCartService.addItemToCart(cartRequestInsert);
 
         assertNotNull(result);
         verify(shoppingCartRepositoryService).save(shoppingCart);
@@ -97,14 +97,14 @@ class ShoppingCartServiceImplTest {
 
         when(shoppingCartRepositoryService.findCartItem(shoppingCart, itemId)).thenReturn(cartItem);
 
-        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new ShoppingCartDTO());
+        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new CartResponse());
 
         CartRequestUpdate cartRequestInsert1 = new CartRequestUpdate();
         cartRequestInsert1.setItemId(itemId);
         cartRequestInsert1.setQuantity(quantity);
         cartRequestInsert1.setCartId(cartId);
 
-        ShoppingCartDTO result = shoppingCartService.updateItemQuantity(cartRequestInsert1);
+        CartResponse result = shoppingCartService.updateItemQuantity(cartRequestInsert1);
 
         assertNotNull(result);
         assertEquals(2, cartItem.getQuantity());
@@ -123,7 +123,7 @@ class ShoppingCartServiceImplTest {
 
         when(shoppingCartRepositoryService.findCartItem(shoppingCart, itemId)).thenReturn(cartItem);
 
-        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new ShoppingCartDTO());
+        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new CartResponse());
 
         doNothing().when(cartService).remove(any(),any());
         doNothing().when(shoppingCartRepositoryService).deleteCartIfEmpty(shoppingCart);
@@ -131,7 +131,7 @@ class ShoppingCartServiceImplTest {
         CartRequestDelete cartRequestInsert1 = new CartRequestDelete();
         cartRequestInsert1.setCartId(cartId);
         cartRequestInsert1.setItemId(itemId);
-        ShoppingCartDTO result = shoppingCartService.removeItemFromCart(cartRequestInsert1);
+        CartResponse result = shoppingCartService.removeItemFromCart(cartRequestInsert1);
 
         assertNotNull(result);
         assertTrue(result.getCartItems().isEmpty());
@@ -149,11 +149,11 @@ class ShoppingCartServiceImplTest {
         when(cartService.findByShoppingCart(cartId)).thenReturn(new HashSet<>(Collections.singletonList(cartItem)));
         when(cartService.getCartItem(anySet())).thenReturn(new HashSet<>());
 
-        CartResponse expectedResponse = new CartResponse();
+        CartResponseTotal expectedResponse = new CartResponseTotal();
         expectedResponse.setTotal(BigDecimal.valueOf(20.00));
 
-        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new ShoppingCartDTO());
-        CartResponse result = shoppingCartService.getCartTotal(cartId);
+        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new CartResponse());
+        CartResponseTotal result = shoppingCartService.getCartTotal(cartId);
 
         assertNotNull(result);
         assertEquals(BigDecimal.valueOf(20.00), result.getTotal());
@@ -163,9 +163,9 @@ class ShoppingCartServiceImplTest {
     void test_getCart_shouldReturnCartSuccessfully() {
         Long cartId = 1L;
         when(shoppingCartRepositoryService.get(cartId)).thenReturn(shoppingCart);
-        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new ShoppingCartDTO());
+        when(shoppingCartMapper.shoppingToShoppingDTO(any())).thenReturn(new CartResponse());
 
-        ShoppingCartDTO result = shoppingCartService.getCart(cartId);
+        CartResponse result = shoppingCartService.getCart(cartId);
 
         assertNotNull(result);
     }

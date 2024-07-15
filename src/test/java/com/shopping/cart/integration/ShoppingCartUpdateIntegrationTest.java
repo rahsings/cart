@@ -2,7 +2,7 @@ package com.shopping.cart.integration;
 
 import com.shopping.cart.exception.CartValueInSufficientException;
 import com.shopping.cart.mapper.ShoppingCartMapper;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
 import com.shopping.cart.repository.CartItemRepository;
@@ -86,7 +86,7 @@ public class ShoppingCartUpdateIntegrationTest {
         cartRequestUpdate.setCartId(cartId);
 
         validationService.validateObject(CartRequestUpdate.class, cartRequestUpdate);
-        ShoppingCartDTO result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
+        CartResponse result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
 
         assertNotNull(result1);
         assertEquals(cartId, result1.getId());
@@ -119,7 +119,7 @@ public class ShoppingCartUpdateIntegrationTest {
         cartRequestUpdate.setCartId(cartId);
 
         validationService.validateObject(CartRequestUpdate.class, cartRequestUpdate);
-        ShoppingCartDTO result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
+        CartResponse result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
 
         assertNotNull(result1);
         assertEquals(cartId, result1.getId());
@@ -131,7 +131,7 @@ public class ShoppingCartUpdateIntegrationTest {
         cartRequestInsert.setProductId(productId1);
         cartRequestInsert.setQuantity(quantity2);
         validationService.validateObject(CartRequestInsert.class, cartRequestInsert);
-        ShoppingCartDTO res = shoppingCartService.addItemToCart(cartRequestInsert);
+        CartResponse res = shoppingCartService.addItemToCart(cartRequestInsert);
         assertEquals(res.getCartItems().size(), 1);
     }
 
@@ -161,7 +161,7 @@ public class ShoppingCartUpdateIntegrationTest {
         cartRequestUpdate.setCartId(cartId);
 
         validationService.validateObject(CartRequestUpdate.class, cartRequestUpdate);
-        ShoppingCartDTO result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
+        CartResponse result1 = shoppingCartService.updateItemQuantity(cartRequestUpdate);
 
         assertNotNull(result1);
         assertEquals(cartId, result1.getId());

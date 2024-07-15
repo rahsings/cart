@@ -1,17 +1,21 @@
 package com.shopping.cart.model.response;
 
 import com.shopping.cart.model.dto.CartItemDTO;
+import com.shopping.cart.model.dto.UserDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-public class CartResponse {
+public class CartResponse implements Serializable {
 
-    private Long cartId;
-    private Set<CartItemDTO> cartItemSet;
-    private BigDecimal total;
+    private static final long serialVersionUID = 9223372036854775807L;
+
+    private Long id;
+    private UserDTO user;
+    private Set<CartItemDTO> cartItems = new HashSet<>();
 }

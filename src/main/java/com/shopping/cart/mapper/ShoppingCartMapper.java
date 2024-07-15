@@ -1,7 +1,7 @@
 package com.shopping.cart.mapper;
 
 import com.shopping.cart.model.dto.CartItemDTO;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.entity.CartItem;
 import com.shopping.cart.model.entity.ShoppingCart;
 import org.mapstruct.Mapper;
@@ -19,8 +19,8 @@ public interface ShoppingCartMapper {
 
     @Mapping(target = "cartItems", source = "cartItems")
     @Mapping(target = "user.addresses", source = "user.addresses")
-    ShoppingCart shoppingDTOToShopping(ShoppingCartDTO shoppingCartDTO);
+    ShoppingCart shoppingDTOToShopping(CartResponse cartResponse);
 
     @Mapping(target = "cartItems", source = "cartItems")
-    ShoppingCartDTO shoppingToShoppingDTO(ShoppingCart shoppingCart);
+    CartResponse shoppingToShoppingDTO(ShoppingCart shoppingCart);
 }

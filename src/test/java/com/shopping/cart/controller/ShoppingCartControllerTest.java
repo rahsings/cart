@@ -3,12 +3,12 @@ package com.shopping.cart.controller;
 import com.shopping.cart.exception.CartNotFoundException;
 import com.shopping.cart.exception.ProductNotFoundException;
 import com.shopping.cart.exception.UserNotFoundException;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.enums.ErrorCode;
 import com.shopping.cart.model.request.CartRequestDelete;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
-import com.shopping.cart.model.response.CartResponse;
+import com.shopping.cart.model.response.CartResponseTotal;
 import com.shopping.cart.service.ShoppingCartService;
 import com.shopping.cart.service.ValidationService;
 import jakarta.validation.ValidationException;
@@ -48,12 +48,12 @@ public class ShoppingCartControllerTest {
     @Test
     void mockAddItemToCart() {
         CartRequestInsert cartRequestInsert = new CartRequestInsert();
-        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        CartResponse cartResponse = new CartResponse();
 
-        when(shoppingCartService.addItemToCart(any(CartRequestInsert.class))).thenReturn(shoppingCartDTO);
+        when(shoppingCartService.addItemToCart(any(CartRequestInsert.class))).thenReturn(cartResponse);
 
-        ResponseEntity<ShoppingCartDTO> response = shoppingCartController.addItemToCart(cartRequestInsert);
-        assertEquals(shoppingCartDTO, response.getBody());
+        ResponseEntity<CartResponse> response = shoppingCartController.addItemToCart(cartRequestInsert);
+        assertEquals(cartResponse, response.getBody());
     }
 
     @Test
@@ -62,12 +62,12 @@ public class ShoppingCartControllerTest {
         CartRequestUpdate cartRequestInsert = new CartRequestUpdate();
         cartRequestInsert.setItemId(2L);
         cartRequestInsert.setQuantity(3);
-        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        CartResponse cartResponse = new CartResponse();
 
-        when(shoppingCartService.updateItemQuantity(any())).thenReturn(shoppingCartDTO);
+        when(shoppingCartService.updateItemQuantity(any())).thenReturn(cartResponse);
 
-        ResponseEntity<ShoppingCartDTO> response = shoppingCartController.updateItemQuantity(cartId, cartRequestInsert);
-        assertEquals(shoppingCartDTO, response.getBody());
+        ResponseEntity<CartResponse> response = shoppingCartController.updateItemQuantity(cartId, cartRequestInsert);
+        assertEquals(cartResponse, response.getBody());
     }
 
     @Test
@@ -75,35 +75,35 @@ public class ShoppingCartControllerTest {
         Long cartId = 1L;
         CartRequestDelete cartRequestInsert = new CartRequestDelete();
         cartRequestInsert.setItemId(2L);
-        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        CartResponse cartResponse = new CartResponse();
 
-        when(shoppingCartService.removeItemFromCart(any())).thenReturn(shoppingCartDTO);
+        when(shoppingCartService.removeItemFromCart(any())).thenReturn(cartResponse);
 
-        ResponseEntity<ShoppingCartDTO> response = shoppingCartController.removeItemFromCart(cartId, cartRequestInsert);
-        assertEquals(shoppingCartDTO, response.getBody());
+        ResponseEntity<CartResponse> response = shoppingCartController.removeItemFromCart(cartId, cartRequestInsert);
+        assertEquals(cartResponse, response.getBody());
     }
 
     @Test
     void mockGetCart() throws CartNotFoundException {
         Long cartId = 1L;
-        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        CartResponse cartResponse = new CartResponse();
 
-        when(shoppingCartService.getCart(anyLong())).thenReturn(shoppingCartDTO);
+        when(shoppingCartService.getCart(anyLong())).thenReturn(cartResponse);
 
-        ResponseEntity<ShoppingCartDTO> response = shoppingCartController.getCart(cartId);
-        assertEquals(shoppingCartDTO, response.getBody());
+        ResponseEntity<CartResponse> response = shoppingCartController.getCart(cartId);
+        assertEquals(cartResponse, response.getBody());
     }
 
     @Test
     void mockGetCartTotal() {
         Long cartId = 1L;
-        CartResponse cartResponse = new CartResponse();
-        cartResponse.setTotal(BigDecimal.valueOf(100.00));
+        CartResponseTotal cartResponseTotal = new CartResponseTotal();
+        cartResponseTotal.setTotal(BigDecimal.valueOf(100.00));
 
-        when(shoppingCartService.getCartTotal(anyLong())).thenReturn(cartResponse);
+        when(shoppingCartService.getCartTotal(anyLong())).thenReturn(cartResponseTotal);
 
-        ResponseEntity<CartResponse> response = shoppingCartController.getCartTotal(cartId);
-        assertEquals(cartResponse, response.getBody());
+        ResponseEntity<CartResponseTotal> response = shoppingCartController.getCartTotal(cartId);
+        assertEquals(cartResponseTotal, response.getBody());
     }
 
     @Test

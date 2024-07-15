@@ -1,21 +1,21 @@
 package com.shopping.cart.service;
 
 import com.shopping.cart.exception.CartNotFoundException;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.request.CartRequestDelete;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
-import com.shopping.cart.model.response.CartResponse;
+import com.shopping.cart.model.response.CartResponseTotal;
 
 public interface ShoppingCartService {
 
-    ShoppingCartDTO addItemToCart(CartRequestInsert item);
+    CartResponse addItemToCart(CartRequestInsert item);
 
-    ShoppingCartDTO updateItemQuantity(CartRequestUpdate item);
+    CartResponse updateItemQuantity(CartRequestUpdate item);
 
-    ShoppingCartDTO removeItemFromCart(CartRequestDelete item);
+    CartResponse removeItemFromCart(CartRequestDelete item);
 
-    CartResponse getCartTotal(Long cartId);
+    CartResponseTotal getCartTotal(Long cartId);
 
-    ShoppingCartDTO getCart(Long cartId) throws CartNotFoundException;
+    CartResponse getCart(Long cartId) throws CartNotFoundException;
 }

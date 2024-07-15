@@ -1,5 +1,6 @@
 package com.shopping.cart.service;
 
+import com.shopping.cart.model.dto.UserDTO;
 import com.shopping.cart.model.entity.CartItem;
 import com.shopping.cart.model.entity.Product;
 import com.shopping.cart.model.entity.ShoppingCart;
@@ -42,7 +43,13 @@ public class ShoppingCartRepositoryService {
     public CartItem findCartItem(ShoppingCart cart, Long itemId) {
         return cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getId().equals(itemId))
-                .findFirst().orElseThrow(()->createCartItemNotFoundException(itemId));
+                .findFirst().orElseThrow(() -> createCartItemNotFoundException(itemId));
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO getUserFromCartId(Long cartId) {
+        ShoppingCart shoppingCart = get(cartId);
+        return userService.getUserDTO(shoppingCart.getUser());
     }
 
     @Transactional(readOnly = true)

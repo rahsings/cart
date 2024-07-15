@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToUserDTO(userRepository.findAll());
     }
 
+    @Override
+    public UserDTO getUserDTO(User user) {
+        return userMapper.userToUserDTO(user);
+    }
+
     @CacheEvict(value = "users", allEntries = true)
     public void evictCacheUsers() {
     }

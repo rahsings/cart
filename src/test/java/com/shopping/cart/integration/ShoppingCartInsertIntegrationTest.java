@@ -5,7 +5,7 @@ import com.shopping.cart.exception.ProductNotFoundException;
 import com.shopping.cart.exception.UserNotFoundException;
 import com.shopping.cart.mapper.ShoppingCartMapper;
 import com.shopping.cart.model.dto.CartItemDTO;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.entity.CartItem;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.repository.CartItemRepository;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(properties = {
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration"
 })
-public class ShoppingCartAdIntegrationTest {
+public class ShoppingCartInsertIntegrationTest {
 
     @Autowired
     private ShoppingCartService shoppingCartService;
@@ -57,6 +58,7 @@ public class ShoppingCartAdIntegrationTest {
 
     @Test
     @Transactional
+    @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test_AddItemToCart() {
         Long userId = 1L;
         Long productId = 1L;
@@ -68,7 +70,7 @@ public class ShoppingCartAdIntegrationTest {
         cartRequestInsert.setQuantity(quantity);
 
         validationService.validateObject(CartRequestInsert.class, cartRequestInsert);
-        ShoppingCartDTO result = shoppingCartService.addItemToCart(cartRequestInsert);
+        CartResponse result = shoppingCartService.addItemToCart(cartRequestInsert);
 
         assertNotNull(result);
         assertEquals(userId, result.getUser().getId());
@@ -85,6 +87,7 @@ public class ShoppingCartAdIntegrationTest {
 
     @Test
     @Transactional
+    @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test_FailValidation_AddItemToCart() {
         Long userId = 1L;
         Long productId = null;
@@ -103,6 +106,7 @@ public class ShoppingCartAdIntegrationTest {
 
     @Test
     @Transactional
+    @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test_FailUserNotFound_AddItemToCart() {
         Long userId = 20L;
         Long productId = 1L;
@@ -119,6 +123,7 @@ public class ShoppingCartAdIntegrationTest {
 
     @Test
     @Transactional
+    @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test_FailProductNotFound_AddItemToCart() {
         Long userId = 1L;
         Long productId = 10L;
@@ -135,6 +140,7 @@ public class ShoppingCartAdIntegrationTest {
 
     @Test
     @Transactional
+    @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test_AddQuantityTwice_AddItemToCart() {
         Long userId = 1L;
         Long productId = 1L;
@@ -146,10 +152,10 @@ public class ShoppingCartAdIntegrationTest {
         cartRequestInsert.setQuantity(quantity);
 
         validationService.validateObject(CartRequestInsert.class, cartRequestInsert);
-        ShoppingCartDTO result = shoppingCartService.addItemToCart(cartRequestInsert);
+        CartResponse result = shoppingCartService.addItemToCart(cartRequestInsert);
         assertTrue(result.getCartItems().stream().anyMatch(item -> item.getProduct().getId().equals(productId) && item.getQuantity() == quantity));
 
-        ShoppingCartDTO result2 = shoppingCartService.addItemToCart(cartRequestInsert);
+        CartResponse result2 = shoppingCartService.addItemToCart(cartRequestInsert);
         assertTrue(result2.getCartItems().stream().anyMatch(item -> item.getProduct().getId().equals(productId) && item.getQuantity() == quantity * 2));
     }
 }

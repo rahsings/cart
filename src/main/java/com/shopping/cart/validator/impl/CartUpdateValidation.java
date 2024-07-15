@@ -1,8 +1,6 @@
 package com.shopping.cart.validator.impl;
 
-import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
-import com.shopping.cart.util.JsonUtils;
 import com.shopping.cart.validator.AbstractValidator;
 import com.shopping.cart.validator.ValidationErrors;
 import org.springframework.stereotype.Component;

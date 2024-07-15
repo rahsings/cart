@@ -2,11 +2,12 @@ package com.shopping.cart.util;
 
 import com.shopping.cart.exception.CartNotFoundException;
 import com.shopping.cart.model.dto.CartItemDTO;
+import com.shopping.cart.model.dto.UserDTO;
 import com.shopping.cart.model.entity.CartItem;
 import com.shopping.cart.model.entity.Product;
 import com.shopping.cart.model.entity.ShoppingCart;
 import com.shopping.cart.model.enums.ErrorCode;
-import com.shopping.cart.model.response.CartResponse;
+import com.shopping.cart.model.response.CartResponseTotal;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
@@ -14,11 +15,11 @@ import java.util.Set;
 
 public class Utils {
 
-    public static String get(Object key,String message){
-        return String.format(message,key);
+    public static String get(Object key, String message) {
+        return String.format(message, key);
     }
 
-    public static String get(Object key1,Object key2,Object key3,String message) {
+    public static String get(Object key1, Object key2, Object key3, String message) {
         return String.format(message, key1, key2, key3);
     }
 
@@ -30,11 +31,12 @@ public class Utils {
         return newCartItem;
     }
 
-    public static CartResponse createCartResponse(Long cartId, Set<CartItemDTO> cartItems, BigDecimal total) {
-        CartResponse response = new CartResponse();
-        response.setCartId(cartId);
-        response.setCartItemSet(cartItems);
+    public static CartResponseTotal createCartResponse(Long cartId, Set<CartItemDTO> cartItems, BigDecimal total, UserDTO userDTO) {
+        CartResponseTotal response = new CartResponseTotal();
+        response.setId(cartId);
+        response.setCartItems(cartItems);
         response.setTotal(total);
+        response.setUser(userDTO);
         return response;
     }
 

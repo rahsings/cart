@@ -2,12 +2,13 @@ package com.shopping.cart.service.impl;
 
 import com.shopping.cart.exception.CartNotFoundException;
 import com.shopping.cart.mapper.ShoppingCartMapper;
-import com.shopping.cart.model.dto.ShoppingCartDTO;
+import com.shopping.cart.model.dto.UserDTO;
+import com.shopping.cart.model.response.CartResponse;
 import com.shopping.cart.model.entity.*;
 import com.shopping.cart.model.request.CartRequestDelete;
 import com.shopping.cart.model.request.CartRequestInsert;
 import com.shopping.cart.model.request.CartRequestUpdate;
-import com.shopping.cart.model.response.CartResponse;
+import com.shopping.cart.model.response.CartResponseTotal;
 import com.shopping.cart.service.CartService;
 import com.shopping.cart.service.ShoppingCartRepositoryService;
 import com.shopping.cart.service.ShoppingCartService;
@@ -31,7 +32,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @CacheEvict(value = "shoppingCartByUserId", key = "#item.userId")
-    public ShoppingCartDTO addItemToCart(CartRequestInsert item) {
+    public CartResponse addItemToCart(CartRequestInsert item) {
         ShoppingCart shoppingCart = shoppingCartRepositoryService.getShoppingCart(item.getUserId());
         Product product = shoppingCartRepositoryService.getProduct(item);
 
@@ -54,7 +55,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @CacheEvict(value = "cartItemsByCartId", key = "#cartRequestInsert.cartId")
-    public ShoppingCartDTO updateItemQuantity(CartRequestUpdate cartRequestUpdate) {
+    public CartResponse updateItemQuantity(CartRequestUpdate cartRequestUpdate) {
         ShoppingCart cart = shoppingCartRepositoryService.get(cartRequestUpdate.getCartId());
         CartItem cartItem = shoppingCartRepositoryService.findCartItem(cart, cartRequestUpdate.getItemId());
         cartService.addOrRemoveQuantityToCart(cartItem, cart, cartRequestUpdate.getQuantity());
@@ -64,7 +65,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @CacheEvict(value = "cartItemsByCartId", key = "#cartRequestInsert.cartId")
-    public ShoppingCartDTO removeItemFromCart(CartRequestDelete cartRequestDelete) {
+    public CartResponse removeItemFromCart(CartRequestDelete cartRequestDelete) {
         ShoppingCart cart = shoppingCartRepositoryService.get(cartRequestDelete.getCartId());
         CartItem cartItem = shoppingCartRepositoryService.findCartItem(cart, cartRequestDelete.getItemId());
 
@@ -74,8 +75,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Transactional(readOnly = true)
-    public CartResponse getCartTotal(Long cartId) {
+    public CartResponseTotal getCartTotal(Long cartId) {
         Set<CartItem> cartItems = cartService.findByShoppingCart(cartId);
+        UserDTO userDTO = shoppingCartRepositoryService.getUserFromCartId(cartId);
 
         if (cartItems.isEmpty()) {
             throw createCartNotFoundException(cartId);
@@ -84,10 +86,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return createCartResponse(cartId, cartService.getCartItem(cartItems), total);
+        return createCartResponse(cartId, cartService.getCartItem(cartItems), total, userDTO);
     }
 
-    public ShoppingCartDTO getCart(Long cartId) throws CartNotFoundException {
+    public CartResponse getCart(Long cartId) throws CartNotFoundException {
         ShoppingCart shoppingCart = shoppingCartRepositoryService.get(cartId);
         return shoppingCartMapper.shoppingToShoppingDTO(shoppingCart);
     }

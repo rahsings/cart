@@ -1,0 +1,96 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.1'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id 'jacoco'
+}
+
+group 'com.shopping.cart'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.postgresql:postgresql:42.7.2'
+	implementation 'org.hibernate.orm:hibernate-core:6.2.7.Final'
+	implementation 'org.flywaydb:flyway-core:9.10.0'
+
+	implementation 'org.mapstruct:mapstruct:1.5.0.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.0.Final'
+
+	//cacheables
+	implementation 'org.ehcache:ehcache:3.+'
+
+	// Spring Doc. OpenAPI dependencies
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+	testImplementation 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+
+	reports {
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'com/shopping/cart/config/**',
+					'com/shopping/cart/exception/**',
+					'com/shopping/cart/mapper/**',
+					'com/shopping/cart/model/**',
+					'com/shopping/cart/util/**'
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.8
+			}
+		}
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'com/shopping/cart/config/**',
+					'com/shopping/cart/exception/**',
+					'com/shopping/cart/mapper/**',
+					'com/shopping/cart/model/**',
+					'com/shopping/cart/util/**'
+			])
+		}))
+	}
+}
+
+check.dependsOn jacocoTestCoverageVerification
